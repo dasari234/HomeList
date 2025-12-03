@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeList Premium - Real Estate Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#059669',
+                        accent: '#7C3AED',
+                        dark: '#111827',
+                        light: '#F9FAFB',
+                        'primary-dark': '#1E40AF',
+                        'secondary-dark': '#047857'
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'slide-down': 'slideDown 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'fade-in-up': 'fadeInUp 0.7s ease-out',
+                        'slide-in-left': 'slideInLeft 0.5s ease-out',
+                        'slide-in-right': 'slideInRight 0.5s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideDown: {
+                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeInUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(20px)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Slider Styles */
+        .hero-slider {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+        }
+
+        /* Header Styles - FIXED for visibility */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.4s ease;
+            background: transparent;
+        }
+
+        /* Ensure everything is visible on mobile */
+        .header .logo-container {
+            z-index: 1001;
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        /* FIXED: Menu items visibility */
+        .header .logo-text {
+            color: white;
+        }
+
+        .header.scrolled .logo-text {
+            color: #111827 !important;
+        }
+
+        .header .logo-icon {
+            background-color: #2563EB;
+        }
+
+        .header.scrolled .logo-icon {
+            background-color: #2563EB !important;
+        }
+
+        /* Navigation links - FIXED for visibility */
+        .header .nav-link {
+            color: white;
+        }
+
+        .header.scrolled .nav-link {
+            color: #4B5563 !important;
+        }
+
+        .header .nav-link:hover {
+            color: #60A5FA !important;
+        }
+
+        .header.scrolled .nav-link:hover {
+            color: #2563EB !important;
+        }
+
+        /* Sign In button - FIXED for visibility */
+        .header .sign-in-btn {
+            border-color: white;
+            color: white;
+        }
+
+        .header.scrolled .sign-in-btn {
+            border-color: #2563EB !important;
+            color: #2563EB !important;
+        }
+
+        .header .sign-in-btn:hover {
+            background-color: white;
+            color: #111827;
+        }
+
+        .header.scrolled .sign-in-btn:hover {
+            background-color: #2563EB !important;
+            color: white !important;
+        }
+
+        /* Add Listing button - FIXED for visibility */
+        .header .add-listing-btn {
+            background-color: #2563EB;
+            color: white;
+        }
+
+        .header.scrolled .add-listing-btn {
+            background-color: #2563EB !important;
+            color: white !important;
+        }
+
+        /* FIXED: Hamburger menu icon visibility */
+        .header #mobile-menu-button {
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .header.scrolled #mobile-menu-button {
+            color: #4B5563 !important;
+        }
+
+        .header #mobile-menu-button:hover {
+            color: #60A5FA;
+        }
+
+        .header.scrolled #mobile-menu-button:hover {
+            color: #2563EB !important;
+        }
+
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 0;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #2563EB;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Property Card Styles */
+        .property-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Fullscreen Slider */
+        .fullscreen-slider {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .slider-image {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .close-slider {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            z-index: 2001;
+            transition: transform 0.3s ease;
+        }
+
+        .close-slider:hover {
+            transform: rotate(90deg);
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .slider-nav:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .prev-slide {
+            left: 30px;
+        }
+
+        .next-slide {
+            right: 30px;
+        }
+
+        .tag {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            z-index: 10;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-tag {
+            background-color: #059669;
+            color: white;
+        }
+
+        .sale-tag {
+            background-color: #DC2626;
+            color: white;
+        }
+
+        .rent-tag {
+            background-color: #2563EB;
+            color: white;
+        }
+
+        /* Stats Counter */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Search Bar - FIXED */
+        .search-container {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animation for elements on scroll */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Content Positioning */
+        .hero-content-container {
+            height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+        }
+
+        /* Services Section */
+        .service-card {
+            transition: all 0.3s ease;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        /* About Section */
+        .about-image {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .feature-list li i {
+            margin-top: 0.25rem;
+            margin-right: 0.75rem;
+            color: #2563EB;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-slider {
+                height: 85vh;
+            }
+
+            .hero-content-container {
+                height: calc(85vh - 80px);
+            }
+
+            .slider-nav {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+
+            .prev-slide {
+                left: 15px;
+            }
+
+            .next-slide {
+                right: 15px;
+            }
+
+            .search-container {
+                padding: 1.5rem;
+                margin-top: 1rem;
+            }
+
+            /* Ensure mobile logo is visible */
+            .header .logo-text {
+                color: white;
+                font-size: 1.5rem;
+            }
+
+            .header.scrolled .logo-text {
+                color: #111827 !important;
+            }
+
+            .header .logo-icon {
+                width: 40px;
+                height: 40px;
+                background-color: #2563EB;
+            }
+
+            .header.scrolled .logo-icon {
+                background-color: #2563EB !important;
+            }
+
+            /* Ensure hamburger icon is visible */
+            .header #mobile-menu-button {
+                color: white;
+                font-size: 1.75rem;
+            }
+
+            .header.scrolled #mobile-menu-button {
+                color: #4B5563 !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header .logo-text {
+                font-size: 1.25rem;
+            }
+
+            .header .logo-icon {
+                width: 36px;
+                height: 36px;
+            }
+
+            .header #mobile-menu-button {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter bg-gray-50">
+    <!-- Header/Navigation -->
+    <header class="header" id="main-header">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex justify-between items-center py-5">
+                <!-- Logo - FIXED for mobile visibility -->
+                <div class="flex items-center space-x-3 logo-container">
+                    <div class="logo-icon w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-home text-white text-xl"></i>
+                    </div>
+                    <span class="logo-text text-2xl font-bold">Home<span class="text-primary">List</span></span>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex space-x-10">
+                    <a href="#home" class="nav-link text-white">Home</a>
+                    <a href="#listings" class="nav-link text-white">Listings</a>
+                    <a href="#services" class="nav-link text-white">Services</a>
+                    <a href="#about" class="nav-link text-white">About</a>
+                    <a href="#contact" class="nav-link text-white">Contact</a>
+                </nav>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-4 lg:hidden text-2xl">
+                    <!-- <button
+                        class="add-listing-btn hidden md:inline-flex items-center px-5 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <i class="fas fa-plus mr-2"></i> Add Listing
+                    </button>
+                    <button
+                        class="sign-in-btn hidden md:inline-flex items-center px-5 py-3 border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-dark transition-all duration-300">
+                        <i class="fas fa-user mr-2"></i> Sign In
+                    </button> -->
+
+                    <!-- Mobile Menu Button - FIXED visibility -->
+                    <button id="mobile-menu-button">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="lg:hidden hidden bg-white rounded-xl mt-4 p-6 shadow-2xl animate-slide-down">
+                <div class="flex flex-col space-y-5">
+                    <a href="#home" class="nav-link text-dark py-2">Home</a>
+                    <a href="#listings" class="nav-link text-dark py-2">Listings</a>
+                    <a href="#services" class="nav-link text-dark py-2">Services</a>
+                    <a href="#about" class="nav-link text-dark py-2">About</a>
+                    <a href="#contact" class="nav-link text-dark py-2">Contact</a>
+                    <!-- <div class="pt-4 border-t flex flex-col space-y-4">
+                        <button
+                            class="add-listing-btn w-full py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary-dark transition">
+                            Add Listing
+                        </button>
+                        <button
+                            class="sign-in-btn w-full py-3 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition">
+                            Sign In
+                        </button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Auto Slider -->
+    <section id="home" class="hero-slider">
+        <!-- Slide 1 -->
+        <div class="slide active"
+            style="background-image: url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?q=80&w=2071&auto=format&fit=crop')">
+            <div class="slide-overlay"></div>
+            <div class="container mx-auto px-4 lg:px-8 h-full">
+                <div class="hero-content-container">
+                    <div class="max-w-2xl text-white animate-fade-in-up">
+                        <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">Discover Your Dream Home Today
+                        </h1>
+                        <p class="text-xl mb-10 text-gray-200">Explore thousands of premium properties with accurate
+                            search and detailed information at your fingertips.</p>
+                        <!-- <div class="flex space-x-4">
+                            <button class="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl">
+                                Browse Properties
+                            </button>
+                            <button class="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl backdrop-blur-sm transition-all duration-300 border border-white/30">
+                                Learn More
+                            </button>
+                        </div> -->
+                    </div>
+                </div>
+
+                <!-- FIXED Search Bar - Now positioned properly and visible -->
+                <!-- <div class="absolute bottom-10 left-0 right-0 z-20">
+                    <div class="container mx-auto px-4 lg:px-8">
+                        <div class="search-container animate-slide-up">
+                            <h3 class="text-2xl font-bold text-dark mb-6 text-center lg:text-left">Find Your Perfect Property</h3>
+                            <div class="flex flex-col lg:flex-row items-center gap-4">
+                                <div class="flex-1 w-full">
+                                    <div class="relative">
+                                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <input type="text" placeholder="Enter city, neighborhood, or address" class="w-full p-4 pl-12 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <select class="w-full p-4 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="">Property Type</option>
+                                        <option value="house">House</option>
+                                        <option value="apartment">Apartment</option>
+                                        <option value="condo">Condo</option>
+                                        <option value="villa">Villa</option>
+                                        <option value="townhouse">Townhouse</option>
+                                    </select>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <select class="w-full p-4 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="">Price Range</option>
+                                        <option value="0-200k">$0 - $200,000</option>
+                                        <option value="200k-500k">$200,000 - $500,000</option>
+                                        <option value="500k-1m">$500,000 - $1M</option>
+                                        <option value="1m+">$1M+</option>
+                                    </select>
+                                </div>
+                                <div class="w-full lg:w-auto">
+                                    <button class="w-full lg:w-auto bg-primary hover:bg-primary-dark text-white font-semibold p-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+                                        <i class="fas fa-search mr-3"></i> Search Properties
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex flex-wrap gap-4 justify-center lg:justify-start">
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">
+                                    <i class="fas fa-bed mr-2"></i> 3+ Beds
+                                </button>
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">
+                                    <i class="fas fa-swimming-pool mr-2"></i> Pool
+                                </button>
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">
+                                    <i class="fas fa-car mr-2"></i> Parking
+                                </button>
+                                <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">
+                                    <i class="fas fa-dog mr-2"></i> Pet Friendly
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide"
+            style="background-image: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2073&auto=format&fit=crop')">
+            <div class="slide-overlay"></div>
+            <div class="container mx-auto px-4 lg:px-8 h-full">
+                <div class="hero-content-container">
+                    <div class="max-w-2xl text-white animate-fade-in-up">
+                        <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">Luxury Living Redefined</h1>
+                        <p class="text-xl mb-10 text-gray-200">Experience the finest collection of luxury properties
+                            with premium amenities and prime locations.</p>
+                        <!-- <div class="flex space-x-4">
+                            <button class="px-8 py-4 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl">
+                                View Luxury Homes
+                            </button>
+                            <button class="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl backdrop-blur-sm transition-all duration-300 border border-white/30">
+                                Schedule Tour
+                            </button>
+                        </div> -->
+                    </div>
+                </div>
+
+                <!-- FIXED Search Bar for Slide 2 -->
+                <!-- <div class="absolute bottom-10 left-0 right-0 z-20">
+                    <div class="container mx-auto px-4 lg:px-8">
+                        <div class="search-container animate-slide-up">
+                            <h3 class="text-2xl font-bold text-dark mb-6 text-center lg:text-left">Find Your Luxury Property</h3>
+                            <div class="flex flex-col lg:flex-row items-center gap-4">
+                                <div class="flex-1 w-full">
+                                    <div class="relative">
+                                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <input type="text" placeholder="Search luxury locations..." class="w-full p-4 pl-12 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <select class="w-full p-4 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="">Luxury Features</option>
+                                        <option value="pool">Swimming Pool</option>
+                                        <option value="gym">Private Gym</option>
+                                        <option value="view">Panoramic Views</option>
+                                        <option value="smart">Smart Home</option>
+                                    </select>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <select class="w-full p-4 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="">Min Price</option>
+                                        <option value="500k">$500,000+</option>
+                                        <option value="1m">$1M+</option>
+                                        <option value="2m">$2M+</option>
+                                        <option value="5m">$5M+</option>
+                                    </select>
+                                </div>
+                                <div class="w-full lg:w-auto">
+                                    <button class="w-full lg:w-auto bg-secondary hover:bg-secondary-dark text-white font-semibold p-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+                                        <i class="fas fa-search mr-3"></i> Search Luxury
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide"
+            style="background-image: url('https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=1965&auto=format&fit=crop')">
+            <div class="slide-overlay"></div>
+            <div class="container mx-auto px-4 lg:px-8 h-full">
+                <div class="hero-content-container">
+                    <div class="max-w-2xl text-white animate-fade-in-up">
+                        <h1 class="text-5xl lg:text-6xl font-bold mb-6 leading-tight">Smart Investment Opportunities
+                        </h1>
+                        <p class="text-xl mb-10 text-gray-200">Find properties with the best ROI potential in emerging
+                            neighborhoods and established markets.</p>
+                        <!-- <div class="flex space-x-4">
+                            <button class="px-8 py-4 bg-accent hover:bg-purple-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl">
+                                Investment Properties
+                            </button>
+                            <button class="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl backdrop-blur-sm transition-all duration-300 border border-white/30">
+                                Get Advice
+                            </button>
+                        </div> -->
+                    </div>
+                </div>
+
+                <!-- FIXED Search Bar for Slide 3 -->
+                <!-- <div class="absolute bottom-10 left-0 right-0 z-20">
+                    <div class="container mx-auto px-4 lg:px-8">
+                        <div class="search-container animate-slide-up">
+                            <h3 class="text-2xl font-bold text-dark mb-6 text-center lg:text-left">Find Investment Properties</h3>
+                            <div class="flex flex-col lg:flex-row items-center gap-4">
+                                <div class="flex-1 w-full">
+                                    <div class="relative">
+                                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <input type="text" placeholder="Search investment areas..." class="w-full p-4 pl-12 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <select class="w-full p-4 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="">Investment Type</option>
+                                        <option value="rental">Rental Property</option>
+                                        <option value="flip">Fix & Flip</option>
+                                        <option value="commercial">Commercial</option>
+                                        <option value="vacation">Vacation Rental</option>
+                                    </select>
+                                </div>
+                                <div class="flex-1 w-full">
+                                    <select class="w-full p-4 text-dark rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="">ROI Potential</option>
+                                        <option value="high">High ROI</option>
+                                        <option value="medium">Medium ROI</option>
+                                        <option value="stable">Stable Returns</option>
+                                    </select>
+                                </div>
+                                <div class="w-full lg:w-auto">
+                                    <button class="w-full lg:w-auto bg-accent hover:bg-purple-700 text-white font-semibold p-4 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+                                        <i class="fas fa-chart-line mr-3"></i> Find Investments
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <!-- Slider Navigation Dots -->
+        <div class="absolute bottom-32 left-1/2 transform -translate-x-1/2 flex space-x-3 z-30">
+            <button class="slider-dot w-3 h-3 rounded-full bg-white border border-gray-300" data-slide="0"></button>
+            <button class="slider-dot w-3 h-3 rounded-full bg-gray-300 border border-gray-300" data-slide="1"></button>
+            <button class="slider-dot w-3 h-3 rounded-full bg-gray-300 border border-gray-300" data-slide="2"></button>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="pt-24 pb-16 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="stat-card animate-on-scroll">
+                    <div class="text-4xl font-bold text-primary mb-2"><span class="counter" data-target="2500">0</span>+
+                    </div>
+                    <p class="text-gray-600 font-medium">Properties Listed</p>
+                    <div class="w-12 h-1 bg-primary rounded-full mt-4"></div>
+                </div>
+
+                <div class="stat-card animate-on-scroll">
+                    <div class="text-4xl font-bold text-secondary mb-2"><span class="counter"
+                            data-target="850">0</span>+</div>
+                    <p class="text-gray-600 font-medium">Happy Clients</p>
+                    <div class="w-12 h-1 bg-secondary rounded-full mt-4"></div>
+                </div>
+
+                <div class="stat-card animate-on-scroll">
+                    <div class="text-4xl font-bold text-accent mb-2"><span class="counter" data-target="120">0</span>+
+                    </div>
+                    <p class="text-gray-600 font-medium">Expert Agents</p>
+                    <div class="w-12 h-1 bg-accent rounded-full mt-4"></div>
+                </div>
+
+                <div class="stat-card animate-on-scroll">
+                    <div class="text-4xl font-bold text-primary mb-2"><span class="counter" data-target="15">0</span>+
+                    </div>
+                    <p class="text-gray-600 font-medium">Years Experience</p>
+                    <div class="w-12 h-1 bg-primary rounded-full mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties Section -->
+    <section id="listings" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-4xl lg:text-5xl font-bold text-dark mb-6">Featured Properties</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Explore our handpicked selection of premium
+                    properties with great locations and amenities.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Property Card 1 -->
+                <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg animate-on-scroll">
+                    <div class="relative overflow-hidden">
+                        <span class="tag sale-tag">FOR SALE</span>
+                        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop"
+                            alt="Modern Villa"
+                            class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700 cursor-pointer"
+                            onclick="openSlider(0)">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                            <p class="text-white text-2xl font-bold">RS:0,000</p>
+                            <p class="text-gray-300">Kollur, Hyderabad</p>
+                        </div>
+                        <!-- <button class="absolute top-4 right-4 bg-white/90 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition shadow-lg">
+                            <i class="far fa-heart text-xl text-dark"></i>
+                        </button> -->
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-3">Modern Villa with Pool</h3>
+                        <p class="text-gray-600 mb-6">Stunning modern villa with swimming pool, located in the heart of
+                            Kollur. Features 4 bedrooms, 3 bathrooms.</p>
+                        <div class="flex justify-between text-gray-500 mb-6 border-t border-b py-4">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bed text-lg mr-2"></i>
+                                    <span class="font-bold">4</span>
+                                </div>
+                                <span class="text-sm">Beds</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bath text-lg mr-2"></i>
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <span class="text-sm">Baths</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-ruler-combined text-lg mr-2"></i>
+                                    <span class="font-bold">2,500</span>
+                                </div>
+                                <span class="text-sm">sqft</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-car text-lg mr-2"></i>
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <span class="text-sm">Parking</span>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow hover:shadow-lg">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Property Card 2 -->
+                <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg animate-on-scroll">
+                    <div class="relative overflow-hidden">
+                        <span class="tag rent-tag">FOR RENT</span>
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop"
+                            alt="Luxury Apartment"
+                            class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700 cursor-pointer"
+                            onclick="openSlider(1)">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                            <p class="text-white text-2xl font-bold">RS:00,000/mo</p>
+                            <p class="text-gray-300">Kollur, Hyderabad</p>
+                        </div>
+                        <!-- <button class="absolute top-4 right-4 bg-white/90 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition shadow-lg">
+                            <i class="far fa-heart text-xl text-dark"></i>
+                        </button> -->
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-3">Luxury Apartment</h3>
+                        <p class="text-gray-600 mb-6">Premium apartment in downtown Hyderabad with amazing city views.
+                            Includes modern amenities.</p>
+                        <div class="flex justify-between text-gray-500 mb-6 border-t border-b py-4">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bed text-lg mr-2"></i>
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <span class="text-sm">Beds</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bath text-lg mr-2"></i>
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <span class="text-sm">Baths</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-ruler-combined text-lg mr-2"></i>
+                                    <span class="font-bold">1,800</span>
+                                </div>
+                                <span class="text-sm">sqft</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-car text-lg mr-2"></i>
+                                    <span class="font-bold">1</span>
+                                </div>
+                                <span class="text-sm">Parking</span>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow hover:shadow-lg">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Property Card 3 -->
+                <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg animate-on-scroll">
+                    <div class="relative overflow-hidden">
+                        <span class="tag sale-tag">FOR SALE</span>
+                        <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop"
+                            alt="Suburban House"
+                            class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700 cursor-pointer"
+                            onclick="openSlider(2)">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                            <p class="text-white text-2xl font-bold">RS:000,000</p>
+                            <p class="text-gray-300">Kondapur, Hyderabd</p>
+                        </div>
+                        <!-- <button class="absolute top-4 right-4 bg-white/90 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition shadow-lg">
+                            <i class="far fa-heart text-xl text-dark"></i>
+                        </button> -->
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-3">Family House in Suburbs</h3>
+                        <p class="text-gray-600 mb-6">Spacious family home in a quiet suburban neighborhood. Features
+                            large backyard and excellent schools.</p>
+                        <div class="flex justify-between text-gray-500 mb-6 border-t border-b py-4">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bed text-lg mr-2"></i>
+                                    <span class="font-bold">5</span>
+                                </div>
+                                <span class="text-sm">Beds</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bath text-lg mr-2"></i>
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <span class="text-sm">Baths</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-ruler-combined text-lg mr-2"></i>
+                                    <span class="font-bold">3,200</span>
+                                </div>
+                                <span class="text-sm">sqft</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-car text-lg mr-2"></i>
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <span class="text-sm">Parking</span>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow hover:shadow-lg">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Property Card 4 -->
+                <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg animate-on-scroll">
+                    <div class="relative overflow-hidden">
+                        <span class="tag sale-tag">FOR SALE</span>
+                        <img src="https://images.unsplash.com/photo-1513584684374-8bab748fbf90?q=80&w=2068&auto=format&fit=crop"
+                            alt="Modern Villa"
+                            class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700 cursor-pointer"
+                            onclick="openSlider(0)">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                            <p class="text-white text-2xl font-bold">RS:0,000</p>
+                            <p class="text-gray-300">Kollur, Hyderabad</p>
+                        </div>
+                        <!-- <button class="absolute top-4 right-4 bg-white/90 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition shadow-lg">
+                            <i class="far fa-heart text-xl text-dark"></i>
+                        </button> -->
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-3">Beachfront Luxury Villa</h3>
+                        <p class="text-gray-600 mb-6">Stunning modern villa with swimming pool, located in the heart of
+                            Kollur. Features 4 bedrooms, 3 bathrooms.</p>
+                        <div class="flex justify-between text-gray-500 mb-6 border-t border-b py-4">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bed text-lg mr-2"></i>
+                                    <span class="font-bold">4</span>
+                                </div>
+                                <span class="text-sm">Beds</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bath text-lg mr-2"></i>
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <span class="text-sm">Baths</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-ruler-combined text-lg mr-2"></i>
+                                    <span class="font-bold">2,500</span>
+                                </div>
+                                <span class="text-sm">sqft</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-car text-lg mr-2"></i>
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <span class="text-sm">Parking</span>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow hover:shadow-lg">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Property Card 5 -->
+                <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg animate-on-scroll">
+                    <div class="relative overflow-hidden">
+                        <span class="tag sale-tag">FOR SALE</span>
+                        <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2070&auto=format&fit=crop"
+                            alt="Modern Villa"
+                            class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700 cursor-pointer"
+                            onclick="openSlider(0)">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                            <p class="text-white text-2xl font-bold">RS:0,000</p>
+                            <p class="text-gray-300">Kollur, Hyderabad</p>
+                        </div>
+                        <!-- <button class="absolute top-4 right-4 bg-white/90 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition shadow-lg">
+                            <i class="far fa-heart text-xl text-dark"></i>
+                        </button> -->
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-3">Modern City Penthouse</h3>
+                        <p class="text-gray-600 mb-6">Stunning modern villa with swimming pool, located in the heart of
+                            Kollur. Features 4 bedrooms, 3 bathrooms.</p>
+                        <div class="flex justify-between text-gray-500 mb-6 border-t border-b py-4">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bed text-lg mr-2"></i>
+                                    <span class="font-bold">4</span>
+                                </div>
+                                <span class="text-sm">Beds</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bath text-lg mr-2"></i>
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <span class="text-sm">Baths</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-ruler-combined text-lg mr-2"></i>
+                                    <span class="font-bold">2,500</span>
+                                </div>
+                                <span class="text-sm">sqft</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-car text-lg mr-2"></i>
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <span class="text-sm">Parking</span>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow hover:shadow-lg">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                <!-- Property Card 6 -->
+                <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg animate-on-scroll">
+                    <div class="relative overflow-hidden">
+                        <span class="tag sale-tag">FOR SALE</span>
+                        <img src="https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2067&auto=format&fit=crop"
+                            alt="Modern Villa"
+                            class="w-full h-64 object-cover hover:scale-110 transition-transform duration-700 cursor-pointer"
+                            onclick="openSlider(0)">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                            <p class="text-white text-2xl font-bold">RS:0,000</p>
+                            <p class="text-gray-300">Kollur, Hyderabad</p>
+                        </div>
+                        <!-- <button class="absolute top-4 right-4 bg-white/90 w-12 h-12 rounded-full flex items-center justify-center hover:bg-white transition shadow-lg">
+                            <i class="far fa-heart text-xl text-dark"></i>
+                        </button> -->
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-dark mb-3">Mountain View Retreat</h3>
+                        <p class="text-gray-600 mb-6">Stunning modern villa with swimming pool, located in the heart of
+                            Kollur. Features 4 bedrooms, 3 bathrooms.</p>
+                        <div class="flex justify-between text-gray-500 mb-6 border-t border-b py-4">
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bed text-lg mr-2"></i>
+                                    <span class="font-bold">4</span>
+                                </div>
+                                <span class="text-sm">Beds</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-bath text-lg mr-2"></i>
+                                    <span class="font-bold">3</span>
+                                </div>
+                                <span class="text-sm">Baths</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-ruler-combined text-lg mr-2"></i>
+                                    <span class="font-bold">2,500</span>
+                                </div>
+                                <span class="text-sm">sqft</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="flex items-center justify-center text-primary mb-1">
+                                    <i class="fas fa-car text-lg mr-2"></i>
+                                    <span class="font-bold">2</span>
+                                </div>
+                                <span class="text-sm">Parking</span>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-xl transition-all duration-300 shadow hover:shadow-lg">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-16">
+                <button
+                    class="px-10 py-4 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition-all duration-300 text-lg">
+                    View All Properties <i class="fas fa-arrow-right ml-3"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-white">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="text-center mb-12 animate-on-scroll">
+                <h2 class="text-4xl lg:text-5xl font-bold text-dark mb-6">Our Real Estate Services</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">We offer comprehensive real estate solutions tailored
+                    to your unique needs and goals.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-on-scroll">
+                    <div class="service-icon bg-blue-50 text-primary">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Property Buying</h3>
+                    <p class="text-gray-600 mb-6">Find your dream home with our extensive property listings, expert
+                        guidance, and personalized search assistance.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Personalized property matching</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Mortgage assistance</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Home inspection coordination</span>
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-on-scroll">
+                    <div class="service-icon bg-green-50 text-secondary">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Property Selling</h3>
+                    <p class="text-gray-600 mb-6">Get the best value for your property with our marketing expertise,
+                        negotiation skills, and extensive buyer network.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Professional photography & staging</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Strategic pricing analysis</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Multi-platform marketing</span>
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-on-scroll">
+                    <div class="service-icon bg-purple-50 text-accent">
+                        <i class="fas fa-search-dollar"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Property Valuation</h3>
+                    <p class="text-gray-600 mb-6">Get accurate property valuations based on current market trends,
+                        comparable sales, and neighborhood analysis.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Comprehensive market analysis</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Detailed valuation reports</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Investment potential assessment</span>
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-on-scroll">
+                    <div class="service-icon bg-blue-50 text-primary">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Real Estate Consulting</h3>
+                    <p class="text-gray-600 mb-6">Expert advice on real estate investment, market trends, and property
+                        management strategies.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Investment strategy development</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Market trend analysis</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Portfolio management guidance</span>
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-on-scroll">
+                    <div class="service-icon bg-green-50 text-secondary">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Legal & Documentation</h3>
+                    <p class="text-gray-600 mb-6">Comprehensive legal support and documentation services for all your
+                        real estate transactions.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Contract preparation & review</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Title search & verification</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Closing coordination</span>
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card bg-white p-8 rounded-xl shadow-lg border border-gray-100 animate-on-scroll">
+                    <div class="service-icon bg-purple-50 text-accent">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-dark mb-4">Property Management</h3>
+                    <p class="text-gray-600 mb-6">Complete property management services for landlords and property
+                        investors.</p>
+                    <ul class="space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Tenant screening & placement</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Rent collection & financial reporting</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-green-500 mr-3"></i>
+                            <span>Maintenance coordination</span>
+                        </li>
+                    </ul>
+                    <a href="#"
+                        class="inline-flex items-center text-primary font-semibold hover:text-primary-dark transition">
+                        Learn More <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="animate-on-scroll">
+                    <div class="about-image">
+                        <img src="https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?q=80&w=2067&auto=format&fit=crop"
+                            alt="About HomeList" class="w-full h-auto rounded-2xl">
+                    </div>
+                </div>
+
+                <div class="animate-on-scroll">
+                    <h2 class="text-4xl lg:text-5xl font-bold text-dark mb-6">About HomeList</h2>
+                    <p class="text-gray-600 text-lg mb-8">
+                        Founded in 2010, HomeList has grown to become one of the most trusted names in real estate.
+                        Our mission is to simplify the property search process while providing exceptional service
+                        to both buyers and sellers.
+                    </p>
+
+                    <p class="text-gray-600 text-lg mb-8">
+                        With over 15 years of experience, our team of expert agents has helped thousands of clients
+                        find their dream homes and make smart real estate investments. We combine cutting-edge
+                        technology with personalized service to deliver outstanding results.
+                    </p>
+
+                    <div class="mb-1">
+                        <h3 class="text-2xl font-bold text-dark mb-6">Why Choose HomeList?</h3>
+                        <ul class="feature-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <span class="font-semibold">Expert Local Knowledge:</span>
+                                    <span class="text-gray-600"> Our agents have deep knowledge of local markets and
+                                        neighborhoods.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <span class="font-semibold">Advanced Technology:</span>
+                                    <span class="text-gray-600"> We use the latest tools for property search, virtual
+                                        tours, and market analysis.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <span class="font-semibold">Personalized Service:</span>
+                                    <span class="text-gray-600"> Every client receives customized attention and tailored
+                                        solutions.</span>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <span class="font-semibold">Transparent Process:</span>
+                                    <span class="text-gray-600"> We maintain open communication and full transparency
+                                        throughout the process.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- <div class="flex flex-col sm:flex-row gap-4">
+                        <button
+                            class="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl">
+                            Meet Our Team
+                        </button>
+                        <button
+                            class="px-8 py-4 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition-all duration-300">
+                            Our Success Stories
+                        </button>
+                    </div> -->
+                </div>
+            </div>
+
+            <!-- Team Stats -->
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center animate-on-scroll">
+                    <div class="text-5xl font-bold text-primary mb-3">15+</div>
+                    <p class="text-gray-700 font-semibold">Years of Experience</p>
+                    <p class="text-gray-600 mt-2">Serving clients since 2010</p>
+                </div>
+                <div class="text-center animate-on-scroll">
+                    <div class="text-5xl font-bold text-secondary mb-3">120+</div>
+                    <p class="text-gray-700 font-semibold">Certified Agents</p>
+                    <p class="text-gray-600 mt-2">Expert professionals across the country</p>
+                </div>
+                <div class="text-center animate-on-scroll">
+                    <div class="text-5xl font-bold text-accent mb-3">98%</div>
+                    <p class="text-gray-700 font-semibold">Client Satisfaction</p>
+                    <p class="text-gray-600 mt-2">Based on customer reviews</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Screen Image Slider -->
+    <div id="fullscreen-slider" class="fullscreen-slider">
+        <div class="close-slider" onclick="closeSlider()">
+            <i class="fas fa-times"></i>
+        </div>
+
+        <button class="slider-nav prev-slide" onclick="changeSlide(-1)">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="slider-content text-center">
+            <img id="slider-img" class="slider-image" src="" alt="Property Image">
+            <div class="text-white mt-8">
+                <h3 id="slider-title" class="text-3xl font-bold mb-4"></h3>
+                <p id="slider-desc" class="text-gray-300 max-w-2xl mx-auto text-lg mb-6"></p>
+                <div class="flex justify-center space-x-6">
+                    <span id="slider-price" class="bg-primary px-6 py-3 rounded-xl font-bold text-lg"></span>
+                    <span id="slider-type" class="bg-secondary px-6 py-3 rounded-xl font-bold text-lg"></span>
+                </div>
+                <div class="mt-8 text-gray-400">
+                    <span id="slider-index">1</span> of <span id="slider-total">5</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="slider-nav next-slide" onclick="changeSlide(1)">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-dark text-white py-16">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+                <div>
+                    <div class="flex items-center space-x-3 mb-8">
+                        <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                            <i class="fas fa-home text-white text-xl"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white">Home<span class="text-primary">List</span></span>
+                    </div>
+                    <p class="text-gray-400 mb-6">Your trusted partner in finding the perfect property for your needs.
+                        We connect buyers and sellers with excellence.</p>
+                    <div class="flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-primary rounded-full flex items-center justify-center transition">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-bold mb-8">Quick Links</h4>
+                    <ul class="space-y-4 text-gray-400">
+                        <li><a href="#home" class="hover:text-primary transition flex items-center"><i
+                                    class="fas fa-chevron-right text-xs mr-3"></i> Home</a></li>
+                        <li><a href="#listings" class="hover:text-primary transition flex items-center"><i
+                                    class="fas fa-chevron-right text-xs mr-3"></i> Listings</a></li>
+                        <li><a href="#services" class="hover:text-primary transition flex items-center"><i
+                                    class="fas fa-chevron-right text-xs mr-3"></i> Services</a></li>
+                        <li><a href="#about" class="hover:text-primary transition flex items-center"><i
+                                    class="fas fa-chevron-right text-xs mr-3"></i> About Us</a></li>
+                        <li><a href="#contact" class="hover:text-primary transition flex items-center"><i
+                                    class="fas fa-chevron-right text-xs mr-3"></i> Contact</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-bold mb-8">Contact Info</h4>
+                    <ul class="space-y-5 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-primary mr-4 mt-1"></i>
+                            123 Real Estate Avenue, Suite 500, Hyderabad, 500001, India
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone text-primary mr-4"></i>
+                            +91 0000 000 000
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope text-primary mr-4"></i>
+                            info@homelist.com
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-xl font-bold mb-8">Newsletter</h4>
+                    <p class="text-gray-400 mb-6">Subscribe to get updates on new properties and market insights.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email address"
+                            class="flex-1 p-4 rounded-l-xl text-dark focus:outline-none">
+                        <button class="bg-primary hover:bg-primary-dark px-4 rounded-r-xl transition">
+                            <i class="fas fa-paper-plane text-lg"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-sm mt-4">We respect your privacy. Unsubscribe at any time.</p>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500">
+                <p>&copy; 2023 HomeList Premium Real Estate. All rights reserved. | <a href="#"
+                        class="hover:text-primary transition">Privacy Policy</a> | <a href="#"
+                        class="hover:text-primary transition">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenu.classList.toggle('animate-slide-down');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Property data for the fullscreen slider
+        const properties = [
+            {
+                id: 0,
+                title: "Modern Villa with Pool",
+                description: "A stunning modern villa with swimming pool, located in the heart of Miami. This property features 4 bedrooms, 3 bathrooms, spacious living area, gourmet kitchen, and panoramic views.",
+                price: "$450,000",
+                type: "For Sale",
+                image: "https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop"
+            },
+            {
+                id: 1,
+                title: "Luxury Downtown Apartment",
+                description: "Premium apartment in downtown New York with amazing city views. Includes 3 bedrooms, 2 bathrooms, modern amenities, concierge service, and rooftop access.",
+                price: "$3,200/month",
+                type: "For Rent",
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop"
+            },
+            {
+                id: 2,
+                title: "Family House in Suburbs",
+                description: "Spacious family home in a quiet suburban neighborhood. Features 5 bedrooms, 3 bathrooms, large backyard, excellent schools nearby, and recently renovated kitchen.",
+                price: "$325,000",
+                type: "For Sale",
+                image: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop"
+            },
+            {
+                id: 3,
+                title: "Beachfront Condo",
+                description: "Beautiful beachfront condo with panoramic ocean views. Includes 2 bedrooms, 2 bathrooms, direct beach access, modern kitchen, and private balcony.",
+                price: "$550,000",
+                type: "For Sale",
+                image: "https://images.unsplash.com/photo-1448630360428-65456885c650?q=80&w=2067&auto=format&fit=crop"
+            },
+            {
+                id: 4,
+                title: "Penthouse Suite",
+                description: "Luxurious penthouse with rooftop terrace and panoramic city views. Features 3 bedrooms, 3.5 bathrooms, high-end finishes, smart home technology, and private elevator.",
+                price: "$8,500/month",
+                type: "For Rent",
+                image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=2070&auto=format&fit=crop"
+            }
+        ];
+
+        // Hero Auto Slider
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        let currentSlideIndex = 0;
+        let slideInterval;
+
+        // Initialize hero slider
+        function initHeroSlider() {
+            // Set first slide as active
+            slides[0].classList.add('active');
+            dots[0].classList.replace('bg-gray-300', 'bg-white');
+
+            // Start auto slide
+            startAutoSlide();
+
+            // Add click events to dots
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+            });
+        }
+
+        // Start auto slide
+        function startAutoSlide() {
+            slideInterval = setInterval(() => {
+                goToSlide((currentSlideIndex + 1) % slides.length);
+            }, 6000); // Change slide every 6 seconds
+        }
+
+        // Go to specific slide
+        function goToSlide(index) {
+            // Remove active class from current slide and dot
+            slides[currentSlideIndex].classList.remove('active');
+            dots[currentSlideIndex].classList.replace('bg-white', 'bg-gray-300');
+
+            // Update current slide index
+            currentSlideIndex = index;
+
+            // Add active class to new slide and dot
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.replace('bg-gray-300', 'bg-white');
+
+            // Reset auto slide timer
+            clearInterval(slideInterval);
+            startAutoSlide();
+        }
+
+        // Header scroll effect
+        const header = document.getElementById('main-header');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            // Animate elements on scroll
+            animateOnScroll();
+        });
+
+        // Fullscreen slider variables
+        let currentFullscreenSlide = 0;
+
+        // Open fullscreen slider
+        function openSlider(index) {
+            currentFullscreenSlide = index;
+            updateFullscreenSlider();
+            document.getElementById('fullscreen-slider').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            // Pause hero slider
+            clearInterval(slideInterval);
+        }
+
+        // Close fullscreen slider
+        function closeSlider() {
+            document.getElementById('fullscreen-slider').style.display = 'none';
+            document.body.style.overflow = 'auto';
+
+            // Resume hero slider
+            startAutoSlide();
+        }
+
+        // Change slide in fullscreen slider
+        function changeSlide(direction) {
+            currentFullscreenSlide += direction;
+
+            // Loop through slides
+            if (currentFullscreenSlide < 0) {
+                currentFullscreenSlide = properties.length - 1;
+            } else if (currentFullscreenSlide >= properties.length) {
+                currentFullscreenSlide = 0;
+            }
+
+            updateFullscreenSlider();
+        }
+
+        // Update fullscreen slider content
+        function updateFullscreenSlider() {
+            const property = properties[currentFullscreenSlide];
+            document.getElementById('slider-img').src = property.image;
+            document.getElementById('slider-title').textContent = property.title;
+            document.getElementById('slider-desc').textContent = property.description;
+            document.getElementById('slider-price').textContent = property.price;
+            document.getElementById('slider-type').textContent = property.type;
+            document.getElementById('slider-index').textContent = currentFullscreenSlide + 1;
+            document.getElementById('slider-total').textContent = properties.length;
+        }
+
+        // Close slider with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSlider();
+            }
+
+            // Navigation with arrow keys
+            if (document.getElementById('fullscreen-slider').style.display === 'flex') {
+                if (e.key === 'ArrowLeft') {
+                    changeSlide(-1);
+                } else if (e.key === 'ArrowRight') {
+                    changeSlide(1);
+                }
+            }
+        });
+
+        // Animate elements on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-on-scroll');
+
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.2;
+
+                if (elementPosition < screenPosition) {
+                    element.classList.add('visible');
+                }
+            });
+
+            // Animate counters
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                if (counter.classList.contains('animated')) return;
+
+                const counterPosition = counter.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+
+                if (counterPosition < screenPosition) {
+                    counter.classList.add('animated');
+                    animateCounter(counter);
+                }
+            });
+        }
+
+        // Animate counter numbers
+        function animateCounter(counter) {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const duration = 2000; // Animation duration in ms
+            const step = target / (duration / 16); // 60fps
+
+            let current = 0;
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    counter.textContent = target + '+';
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = Math.floor(current) + '+';
+                }
+            }, 16);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initHeroSlider();
+            animateOnScroll();
+
+            // Add click listener to property favorite buttons
+            document.querySelectorAll('.property-card button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const icon = button.querySelector('i');
+                    if (icon.classList.contains('far')) {
+                        icon.classList.replace('far', 'fas');
+                        icon.style.color = '#DC2626';
+                    } else {
+                        icon.classList.replace('fas', 'far');
+                        icon.style.color = '';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
